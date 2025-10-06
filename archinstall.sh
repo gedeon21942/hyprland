@@ -13,10 +13,10 @@
 DISK="/dev/sda"
 
 # System Details
-HOSTNAME="arch-hyprland"
-ROOT_PASS="securepassword" # Change this immediately after first boot
-USER_NAME="archuser"
-USER_PASS="userpassword"   # Change this immediately after first boot
+read -rp "Enter hostname: " HOSTNAME
+read -rp "Enter username: " USER_NAME
+read -rsp "Enter user password: " USER_PASS; echo
+read -rsp "Enter root password: " ROOT_PASS; echo
 TIME_ZONE="America/New_York" # Example: Europe/London, Asia/Tokyo
 
 # Partition Sizes (in MiB for parted or percentages, but we'll use fdisk defaults)
