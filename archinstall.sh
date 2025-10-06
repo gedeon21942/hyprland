@@ -56,6 +56,13 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# List available disks and prompt user to select one
+echo "Available disks:"
+lsblk -d -e 7,11 -o NAME,SIZE,MODEL
+echo ""
+read -rp "Enter the device name to install to (e.g., sda, nvme0n1): " disk_choice
+DISK="/dev/$disk_choice"
+
 # Check if target disk is valid
 if [[ ! -b "$DISK" ]]; then
     echo "Error: Disk $DISK not found or is not a block device."
