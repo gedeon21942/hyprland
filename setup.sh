@@ -51,7 +51,7 @@ echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
 systemctl enable NetworkManager
 
 # Install Hyprland and minimal desktop
-pacman -S --noconfirm hyprland xorg-xwayland waybar wofi kitty ttf-jetbrains-mono-nerd noto-fonts
+pacman -S --noconfirm hyprland xorg-xwayland waybar rofi kitty ttf-jetbrains-mono-nerd noto-fonts
 
 EOF
 
