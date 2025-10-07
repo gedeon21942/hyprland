@@ -53,6 +53,22 @@ systemctl enable NetworkManager
 # Install Hyprland and minimal desktop
 pacman -S --noconfirm hyprland xorg-xwayland waybar rofi kitty ttf-jetbrains-mono-nerd noto-fonts
 
+# Install systemd-boot (for UEFI)
+bootctl install
+
+cat <<BOOT > /boot/loader/loader.conf
+default arch
+timeout 3
+console-mode max
+editor no
+BOOT
+
+cat <<ARCH > /boot/loader/entries/arch.conf
+title   Arch Linux
+linux   /vmlinuz-linux
+initrd  /initramfs-linux.img
+options root=PARTUUID=$(blkid -s PARTUUID -o value ${DISK}2) rw
+ARCH
 EOF
 
 echo "Installation complete! You can reboot now."
