@@ -30,6 +30,9 @@ pacstrap /mnt base linux linux-firmware sudo vim networkmanager git
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
+# Get PARTUUID for root partition before chroot
+ROOT_PARTUUID=$(blkid -s PARTUUID -o value ${DISK}2)
+
 # Chroot and configure
 arch-chroot /mnt /bin/bash <<EOF
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
@@ -67,7 +70,7 @@ cat <<ARCH > /boot/loader/entries/arch.conf
 title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
-options root=PARTUUID=$(blkid -s PARTUUID -o value ${DISK}2) rw
+options root=PARTUUID=$ROOT_PARTUUID rw
 ARCH
 EOF
 
