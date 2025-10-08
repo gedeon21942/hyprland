@@ -72,6 +72,10 @@ linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
 options root=PARTUUID=$ROOT_PARTUUID rw
 ARCH
+
+pacman -S --noconfirm grub efibootmgr
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
 echo "Installation complete! You can reboot now."
