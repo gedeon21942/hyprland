@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Minimal Arch Linux Server Setup Script
+# Minimal Arch Linux Server Setup Script (with GRUB)
 # WARNING: THIS WILL ERASE THE TARGET DISK!
 # Run as root from an Arch ISO live environment.
 
@@ -25,13 +25,10 @@ mkdir -p /mnt/boot
 mount "${DISK}1" /mnt/boot
 
 # Install base system
-pacstrap /mnt base linux linux-firmware sudo vim networkmanager openssh
+pacstrap /mnt base linux linux-firmware sudo vim networkmanager openssh grub efibootmgr
 
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
-
-# Get PARTUUID for root partition before chroot
-ROOT_PARTUUID=$(blkid -s PARTUUID -o value ${DISK}2)
 
 # Chroot and configure
 arch-chroot /mnt /bin/bash <<EOF
@@ -54,22 +51,13 @@ echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
 systemctl enable NetworkManager
 systemctl enable sshd
 
-# Install systemd-boot (for UEFI)
-bootctl install
+# Install GRUB for UEFI
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
-cat <<BOOT > /boot/loader/loader.conf
-default arch
-timeout 3
-console-mode max
-editor no
-BOOT
+# If you want BIOS/MBR support as well, uncomment the next line:
+# grub-install --target=i386-pc "$DISK"
 
-cat <<ARCH > /boot/loader/entries/arch.conf
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd  /initramfs-linux.img
-options root=PARTUUID=$ROOT_PARTUUID rw
-ARCH
+grub-mkconfig -o /boot/grub/grub.cfg
 
 EOF
 
